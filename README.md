@@ -45,8 +45,6 @@ Sıralama (O(NlogN)): Verileri IP bazlı dizmek için verimli bir Merge Sort (B�
 Sistem, verileri 8 farklı veri yapısında aynı anda tutar. Bu durum, 1 milyon satırda yaklaşık 1 GB RAM tüketimine yol açar. Bu testler sırasında, Java'nın Garbage Collector mekanizmasının dinamik bellek üzerindeki etkileri gözlemlenmiş ve raporlanmıştır.
 
 🛠️ Nasıl Çalıştırılır?
-GitHub reposunu bilgisayarınıza klonlayın: git clone https://github.com/kullaniciadi/proje-adi.git
-
 siber_guvenlik_loglari.csv dosyasının projenin kök dizininde olduğundan emin olun.
 
 LogAnalyzer.java dosyasını favori IDE'nizde (IntelliJ, Eclipse, VS Code) açın.
