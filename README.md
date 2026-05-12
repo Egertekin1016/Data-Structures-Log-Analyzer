@@ -1,69 +1,49 @@
-🛡️ Siber Tehdit İstihbarat ve Log Analiz Sistemi
-Gazi Üniversitesi BMT210 Veri Yapıları dersi kapsamında geliştirilen bu proje; bir siber güvenlik operasyon merkezine (SOC) düşen milyonlarca ağ logunu analiz etmek, tehditleri önceliklendirmek ve siber saldırıların ağ içindeki izlerini sürmek amacıyla tasarlanmış bir mühendislik çözümüdür.
+# Siber Tehdit İstihbarat ve Log Analiz Sistemi
 
-📋 Projenin Amacı
-Projenin temel amacı, teorik veri yapıları (Dizi, Bağlı Liste, Yığın, Kuyruk, Ağaç, Graf, Hash vb.) ve algoritmaların (Sorting, BFS), gerçek dünya ölçeğinde bir veri setinde (1 Milyon+ satır) performans, bellek yönetimi ve işlem hızı açısından nasıl farklar yarattığını somutlaştırmaktır.
+Gazi Üniversitesi **BMT210 Veri Yapıları** dersi kapsamında geliştirilen bu proje; bir siber güvenlik operasyon merkezine (SOC) düşen milyonlarca ağ logunu analiz etmek, tehditleri önceliklendirmek ve siber saldırıların ağ içindeki izlerini sürmek amacıyla tasarlanmış bir mühendislik çözümüdür.
 
-📁 Dosya Yapısı ve Görevleri
-Sistem, Modüler ve Nesne Yönelimli Programlama (OOP) prensiplerine uygun olarak 3 ana sınıftan oluşur:
+---
 
-LogEntry.java (Model Katmanı): Her bir siber güvenlik logunu temsil eden nesne kalıbıdır. Timestamp, SourceIP, DestinationIP, Protocol, Port, ThreatLevel ve Action gibi kritik siber istihbarat verilerini kapsüller.
+## Projenin Amacı
+Projenin temel amacı, teorik veri yapıları (**Dizi, Bağlı Liste, Yığın, Kuyruk, Ağaç, Graf, Hash** vb.) ve algoritmaların (**Sorting, BFS**), gerçek dünya ölçeğinde bir veri setinde (**1 Milyon+ satır**) performans, bellek yönetimi ve işlem hızı açısından nasıl farklar yarattığını somutlaştırmaktır.
 
-VeriMerkezi.java (Veri Yönetim Katmanı): Uygulamanın beynidir. Tüm veri yapılarının (ArrayList, LinkedList, Stack, Queue, PriorityQueue, HashMap, HashSet, Graph, BST) tanımlandığı ve yönetildiği merkezdir. Verilerin bellekte (RAM) nasıl organize edileceğine dair kuralları barındırır.
+##  Dosya Yapısı ve Görevleri
+Sistem, Modüler ve **Nesne Yönelimli Programlama (OOP)** prensiplerine uygun olarak 3 ana sınıftan oluşur:
 
-LogAnalyzer.java (Kontrol ve Arayüz Katmanı): Kullanıcı ile sistemin etkileşime girdiği sınıftır. GUI (Swing) kodlarını, arama/sıralama algoritmalarını (Merge Sort, BFS) ve performans test motorunu içerir.
+* **`LogEntry.java` (Model Katmanı):** Her bir siber güvenlik logunu temsil eden nesne kalıbıdır. *Timestamp, SourceIP, DestinationIP, Protocol, Port, ThreatLevel* ve *Action* gibi kritik verileri kapsüller.
+* **`VeriMerkezi.java` (Veri Yönetim Katmanı):** Uygulamanın beynidir. Tüm veri yapılarının (`ArrayList`, `LinkedList`, `Stack`, `Queue`, `PriorityQueue`, `HashMap`, `HashSet`, `Graph`, `BST`) yönetildiği merkezdir.
+* **`LogAnalyzer.java` (Kontrol ve Arayüz Katmanı):** Kullanıcı etkileşim noktasıdır. **GUI (Swing)** kodlarını, arama/sıralama algoritmalarını ve performans test motorunu içerir.
+* **`siber_guvenlik_loglari.csv` (Veri Seti):** Sistemin analiz ettiği, gerçek ağ trafiğini simüle eden ham veridir.
 
-siber_guvenlik_loglari.csv (Veri Seti): Sistemin analiz ettiği ham veridir. Gerçek bir ağ trafiğini simüle edecek şekilde; milyonlarca satırlık, virgülle veya noktalı virgülle ayrılmış siber güvenlik verilerini içerir.
+##  Veri Seti (Loglar) Nasıl Oluşturuldu?
+Log dosyası, tipik bir **IDS/IPS (Saldırı Tespit Sistemi)** çıktısını simüle edecek şekilde yapılandırılmıştır.
 
-📊 Veri Seti (Loglar) Nasıl Oluşturuldu?
-Log dosyası, tipik bir IDS/IPS (Saldırı Tespit Sistemi) çıktısını simüle edecek şekilde yapılandırılmıştır. Her satır bir ağ hareketini temsil eder:
+* **Kaynak ve Hedef IP:** Saldırgan ve kurban cihazların adresleri.
+* **Port:** Saldırının hedeflediği servis (Örn: 80-HTTP, 443-HTTPS, 22-SSH).
+* **Threat Level (Tehdit Seviyesi):** Low, Medium, High, Critical. Bu etiketler, **Priority Queue** yapısının önceliklendirme mantığını belirler.
+* **Action:** Sistemin aldığı aksiyon (ALLOW veya DENY).
 
-Kaynak ve Hedef IP: Saldırgan ve kurban cihazların adresleri.
+##  Algoritmalar ve Veri Yapıları (Teknik Detay)
 
-Port: Saldırının hedeflediği servis (Örn: 80-HTTP, 443-HTTPS, 22-SSH).
+### 1. Zaman Karmaşıklığı (Time Complexity) Analizi
+* **Hızlı Erişim ($O(1)$):** IP adreslerine anında ulaşmak için **HashMap** kullanılmıştır.
+* **Hiyerarşik Arama ($O(\log N)$):** Port numaralarını analiz etmek için sıfırdan yazılmış bir **İkili Arama Ağacı (BST)** kullanılmıştır.
+* **Acil Müdahale (Max-Heap):** Kritik tehditleri yönetmek için **Priority Queue** kullanılmıştır. Tehdit seviyesi en yüksek olan log her zaman en başındadır.
+* **Sıralama ($O(N \log N)$):** Verileri IP bazlı dizmek için verimli bir **Merge Sort** algoritması gerçeklenmiştir.
 
-Threat Level (Tehdit Seviyesi): Low, Medium, High, Critical olarak etiketlenmiştir. Bu etiketler, Priority Queue yapısının veriyi nasıl önceliklendireceğini belirlemek için kullanılır.
+### 2. Alan Karmaşıklığı ve Bellek Yönetimi
+Sistem, verileri 8 farklı veri yapısında aynı anda tutar. 1 milyon satırda yaklaşık **1 GB RAM** tüketimi gözlemlenmiştir. Testler sırasında Java **Garbage Collector** mekanizmasının etkileri raporlanmıştır.
 
-Action: Sistemin aldığı aksiyon (ALLOW veya DENY).
+##  Nasıl Çalıştırılır?
+1.  `siber_guvenlik_loglari.csv` dosyasının projenin kök dizininde olduğundan emin olun.
+2.  `LogAnalyzer.java` dosyasını bir IDE (IntelliJ, VS Code vb.) ile açın.
+3.  `main` metodunu çalıştırın.
+4.  **"Hacker Terminali"** temalı panelden veri yükleme ve performans testlerini başlatın.
 
-⚙️ Algoritmalar ve Veri Yapıları (Teknik Detay)
-Projenin başarısı, her işlemin doğasına en uygun veri yapısının seçilmesinden gelir:
+---
 
-1. Zaman Karmaşıklığı (Time Complexity) Analizi
+##  Geliştiriciler
+Bu proje, **Gazi Üniversitesi Teknoloji Fakültesi Bilgisayar Mühendisliği** öğrencileri tarafından geliştirilmiştir:
 
-Shutterstock
-Keşfet
-Hızlı Erişim (O(1)): IP adreslerine anında ulaşmak için HashMap kullanılmıştır. Milyonlarca kayıt arasında arama süresi veri boyutundan bağımsızdır.
-
-Hiyerarşik Arama (O(logN)): Port numaralarını analiz etmek için sıfırdan yazılmış bir İkili Arama Ağacı (BST) kullanılmıştır.
-
-Acil Müdahale (Max-Heap): Kritik tehditleri yönetmek için Priority Queue kullanılmıştır. Tehdit seviyesi en yüksek olan log, her zaman kuyruğun en başındadır.
-
-Sıralama (O(NlogN)): Verileri IP bazlı dizmek için verimli bir Merge Sort (Böl ve Fethet) algoritması gerçeklenmiştir.
-
-2. Alan Karmaşıklığı (Space Complexity) ve Bellek Yönetimi
-Sistem, verileri 8 farklı veri yapısında aynı anda tutar. Bu durum, 1 milyon satırda yaklaşık 1 GB RAM tüketimine yol açar. Bu testler sırasında, Java'nın Garbage Collector mekanizmasının dinamik bellek üzerindeki etkileri gözlemlenmiş ve raporlanmıştır.
-
-🛠️ Nasıl Çalıştırılır?
-siber_guvenlik_loglari.csv dosyasının projenin kök dizininde olduğundan emin olun.
-
-LogAnalyzer.java dosyasını favori IDE'nizde (IntelliJ, Eclipse, VS Code) açın.
-
-main metodunu çalıştırın.
-
-Açılan "Hacker Terminali" temalı panelden:
-
-Menü 1: Veri yükleme (10K, 100K veya 1M seçebilirsiniz).
-
-Menü 2: Performans testlerini koşturup CSV raporu oluşturma.
-
-Diğer Menüler: Manuel IP arama, Graph analizi ve Stack tabanlı geri alma işlemlerini yapma.
-
-👨‍💻 Geliştiriciler
-Bu proje, Gazi Üniversitesi Teknoloji Fakültesi Bilgisayar Mühendisliği öğrencilerinden oluşan 2 kişilik ekip tarafından geliştirilmiştir:
-
-Ege Ertekin
-
-Melda Kahraman
-
-Bu çalışma, Bilgisayar Mühendisliği eğitiminin "Veri Yapıları" dersi final projesi olarak sunulmuştur.
+* **Ege Ertekin**
+* **Melda Kahraman**
